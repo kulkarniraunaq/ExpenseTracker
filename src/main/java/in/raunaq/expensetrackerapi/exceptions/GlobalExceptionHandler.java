@@ -21,6 +21,7 @@ import in.raunaq.expensetrackerapi.entity.ErrorObject;
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+	// If expense(Any Resource) not found
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<ErrorObject> handleExpenseNotFoundException(ResourceNotFoundException ex,
 			WebRequest request) {
@@ -32,6 +33,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<ErrorObject>(errorObject, HttpStatus.NOT_FOUND);
 	}
 
+	// For wrong method parameters(String instead of int) in uri
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
 	public ResponseEntity<ErrorObject> handleMethodArgumentMismatchException(MethodArgumentTypeMismatchException ex,
 			WebRequest request) {
@@ -43,6 +45,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<ErrorObject>(errorObject, HttpStatus.BAD_REQUEST);
 	}
 
+	// Generic Exceptions
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorObject> handleGeneralException(Exception ex, WebRequest request) {
 
@@ -53,6 +56,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<ErrorObject>(errorObject, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
+	// For hibernate validations of the entity class
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {

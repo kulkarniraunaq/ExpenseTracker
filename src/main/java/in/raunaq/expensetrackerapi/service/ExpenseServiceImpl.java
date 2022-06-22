@@ -1,5 +1,7 @@
 package in.raunaq.expensetrackerapi.service;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,14 +37,8 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 	@Override
 	public void deleteExpenseById(Long id) {
-		Optional<Expense> expense = expenseRepository.findById(id);
-		{
-			if (expense.isPresent()) {
-				expenseRepository.deleteById(id);
-			} else {
-				throw new ResourceNotFoundException("Expense not found for id " + id);
-			}
-		}
+		Expense expense = getExpenseById(id);
+		expenseRepository.delete(expense);
 	}
 
 	@Override
@@ -61,6 +57,30 @@ public class ExpenseServiceImpl implements ExpenseService {
 				.setCategory(expense.getCategory() != null ? expense.getCategory() : existingExpense.getCategory());
 		existingExpense.setDate(expense.getDate() != null ? expense.getDate() : existingExpense.getDate());
 		return expenseRepository.save(existingExpense);
+	}
+
+	@Override
+	public List<Expense> readByCategory(String category, Pageable page) {
+		return expenseRepository.findByCategory(category, page).toList();
+	}
+
+	@Override
+	public List<Expense> readByName(String name, Pageable page) {
+		return expenseRepository.findByNameContaining(name, page).toList();
+	}
+
+	@Override
+	public List<Expense> readByDate(Date startDate, Date endDate, Pageable page) {
+
+		if (startDate == null) {
+			startDate = new Date(0);
+		}
+
+		if (endDate == null) {
+			endDate = new Date(System.currentTimeMillis());
+		}
+
+		return expenseRepository.findByDateBetween(startDate, endDate, page).toList();
 	}
 
 }
